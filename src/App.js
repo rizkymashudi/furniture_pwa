@@ -8,11 +8,14 @@ import AsideMenu from "./components/AsideMenu.js";
 import Footer from "./components/Footer.js";
 import Offline from './components/Offline.js';
 import { responsesAreSame } from 'workbox-broadcast-update';
+import Splash from './pages/splash.js';
 
 
 function App() {
   const [items, setItems] = React.useState([]);
   const [offlineStatus, setOfflineStatus] = React.useState(!navigator.onLine)
+  const [isLoading, setIsLoading] = React.useState(true)
+
 
   function handleOfflineStatus() {
     setOfflineStatus(!navigator.onLine)
@@ -37,9 +40,15 @@ function App() {
 
     })();
 
+    //Offline Notifbar
     handleOfflineStatus()
     window.addEventListener('online', handleOfflineStatus)
     window.addEventListener('offline', handleOfflineStatus)
+
+    //Timeout splash screen
+    setTimeout(function(){
+      setIsLoading(false)
+    }, 1500)
 
     return function() {
       window.removeEventListener('online', handleOfflineStatus)
@@ -50,14 +59,20 @@ function App() {
 
   return (
     <>
-      {offlineStatus && <Offline />}
-      <Header />
-      <Hero />
-      <Browse />
-      <Arrived items={items}/>
-      <Client />
-      <AsideMenu />
-      <Footer />
+      { isLoading == true ? <Splash/> :
+        (
+          <>
+            {offlineStatus && <Offline />}
+            <Header />
+            <Hero />
+            <Browse />
+            <Arrived items={items}/>
+            <Client />
+            <AsideMenu />
+            <Footer />
+          </>
+        )}
+      
     </>
   );
 }
