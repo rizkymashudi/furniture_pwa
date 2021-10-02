@@ -1,4 +1,6 @@
 import React from 'react';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
+
 import Header from './components/Header.js';
 import Hero from './components/Hero.js';
 import Browse from "./components/Browse.js";
@@ -9,6 +11,7 @@ import Footer from "./components/Footer.js";
 import Offline from './components/Offline.js';
 import { responsesAreSame } from 'workbox-broadcast-update';
 import Splash from './pages/splash.js';
+import Profile from './pages/profile.js';
 
 
 function App() {
@@ -77,4 +80,11 @@ function App() {
   );
 }
 
-export default App;
+export default function Routes(){
+  return (
+    <Router>
+      <Route path="/" exact component={App} />
+      <Route path="/Profile" exact component={Profile} />
+    </Router>
+  )
+};
