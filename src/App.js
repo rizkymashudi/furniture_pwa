@@ -12,6 +12,7 @@ import Offline from './components/Offline.js';
 import { responsesAreSame } from 'workbox-broadcast-update';
 import Splash from './pages/splash.js';
 import Profile from './pages/profile.js';
+import Details from './components/Details';
 
 
 function App() {
@@ -66,7 +67,7 @@ function App() {
         (
           <>
             {offlineStatus && <Offline />}
-            <Header />
+            <Header mode="light" />
             <Hero />
             <Browse />
             <Arrived items={items}/>
@@ -85,6 +86,7 @@ export default function Routes(){
     <Router>
       <Route path="/" exact component={App} />
       <Route path="/Profile" exact component={Profile} />
+      <Route path="/details/:id" component={Details} />
     </Router>
   )
 };
