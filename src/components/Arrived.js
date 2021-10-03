@@ -16,6 +16,7 @@ function Arrived({ items }){
                         {items && items.map(function(item) {
                             return (
                                 <ArrivedItems item={item} key={item.id} />
+                                
                             )
                         })}
                     </div>

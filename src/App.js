@@ -12,15 +12,15 @@ import Offline from './components/Offline.js';
 import { responsesAreSame } from 'workbox-broadcast-update';
 import Splash from './pages/splash.js';
 import Profile from './pages/profile.js';
-import Details from './components/Details';
+import Details from './components/Details.js';
+import Cart from './pages/Cart.js';
 
 
-function App() {
+function App({ cart }) {
   const [items, setItems] = React.useState([]);
   const [offlineStatus, setOfflineStatus] = React.useState(!navigator.onLine)
   const [isLoading, setIsLoading] = React.useState(true)
-
-
+  
   function handleOfflineStatus() {
     setOfflineStatus(!navigator.onLine)
   }
@@ -61,13 +61,14 @@ function App() {
 
   }, [offlineStatus]);
 
+ 
   return (
     <>
       { isLoading == true ? <Splash/> :
         (
           <>
             {offlineStatus && <Offline />}
-            <Header mode="light" />
+            <Header mode="light" cart={cart} />
             <Hero />
             <Browse />
             <Arrived items={items}/>
@@ -82,11 +83,43 @@ function App() {
 }
 
 export default function Routes(){
+  const cachedCart = window.localStorage.getItem("cart")
+  const [cart, setCart] = React.useState([])
+ 
+  function handleAddToCart(item) {
+    const currentIndex = cart.length;
+    const newCart = [...cart, {id: currentIndex + 1, item}]
+    setCart(newCart)
+    window.localStorage.setItem("cart", JSON.stringify(newCart))
+  }
+
+  function handleRemoveCartItem(event, id){
+    const revisedCart = cart.filter(function(item) {
+      return item.id != id
+    })
+    setCart(revisedCart)
+    window.localStorage.setItem("cart", JSON.stringify(revisedCart))
+  }
+
+  React.useEffect(function () {
+    console.info("useEffectfor localStorage")
+    if (cachedCart !== null) {
+      setCart(JSON.parse(cachedCart))
+    }
+  }, [cachedCart])
+
   return (
     <Router>
-      <Route path="/" exact component={App} />
+      <Route path="/" exact>
+        <App cart={cart}/>
+      </Route>
       <Route path="/Profile" exact component={Profile} />
-      <Route path="/details/:id" component={Details} />
+      <Route path="/details/:id">
+        <Details handleAddToCart={handleAddToCart} cart={cart} />
+      </Route>
+      <Route path="/cart">
+        <Cart cart={cart} handleRemoveCartItem={handleRemoveCartItem}/>  
+      </Route>
     </Router>
   )
 };
